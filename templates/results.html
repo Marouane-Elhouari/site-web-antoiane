@@ -1,0 +1,203 @@
+{% extends "layout.html" %}
+
+{% block title %}Calculation Report - Antoine Equation{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <!-- Report Header -->
+        <div class="report-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="report-title">
+                        <i class="fas fa-flask"></i> {{ selected_liquid.name }}
+                    </h1>
+                    <p class="report-subtitle mb-0">
+
+                        {% if selected_liquid.chemical_formula %}
+                        <span class="ms-3 chemical-formula">
+                            {{ selected_liquid.chemical_formula | format_formula | safe }}
+                        </span>
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div id="status-badge">
+                        {% if result.T >= selected_liquid.temperature_min and result.T <=
+                            selected_liquid.temperature_max %} <span class="status-badge status-valid">
+                            <i class="fas fa-check-circle"></i>
+                            </span>
+                            {% else %}
+                            <span class="status-badge status-warning">
+                                <i class="fas fa-exclamation-triangle"></i> Extrapolation
+                            </span>
+                            {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Result Card -->
+        <div class="result-card">
+            <h3 class="mb-4">
+                <i class="fas fa-chart-line"></i> Vapor Pressure Calculation
+            </h3>
+
+            <div class="result-value-main">
+                <span
+                    style="font-size: 3.5rem; font-weight: 800; color: #00adb5; text-shadow: 0 0 30px rgba(0, 173, 181, 0.8);">
+                    P<sub>sat</sub> = {{ result.P_mmHg }} mmHg
+                </span>
+            </div>
+
+            <div class="mt-4">
+                <h5 class="text-secondary">Additional Units</h5>
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <div class="h4 text-primary">{{ result.P_bar }}</div>
+                            <small class="text-muted">bar</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <div class="h4 text-info">{{ result.P_kPa }}</div>
+                            <small class="text-muted">kPa</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <div class="h4 text-success">{{ result.P_atm }}</div>
+                            <small class="text-muted">atm</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Safety Check Section -->
+        {% if result.T < selected_liquid.temperature_min or result.T> selected_liquid.temperature_max %}
+            <div class="warning-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Extrapolation Warning:</strong> Results may be inaccurate.
+                Temperature {{ result.T }}°C is outside the valid range
+                [{% if selected_liquid.temperature_min is not none %}{{ selected_liquid.temperature_min }}{% else
+                %}N/A{% endif %}°C,
+                {% if selected_liquid.temperature_max is not none %}{{ selected_liquid.temperature_max }}{% else %}N/A{%
+                endif %}°C].
+            </div>
+            {% endif %}
+
+            <!-- Data Tables -->
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-thermometer-half"></i> Input Parameters
+                            </h5>
+                        </div>
+                        <table class="table data-table mb-0">
+                            <tr>
+                                <th>Temperature</th>
+                                <td>{{ result.T }}°C</td>
+                            </tr>
+                            <tr>
+                                <th>Valid Range</th>
+                                <td>
+                                    {% if selected_liquid.temperature_min is not none and
+                                    selected_liquid.temperature_max is not none %}
+                                    {{ selected_liquid.temperature_min }}°C to {{ selected_liquid.temperature_max }}°C
+                                    {% else %}
+                                    N/A
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Boiling Point</th>
+                                <td>{{ selected_liquid.boiling_point or 'N/A' }}°C</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-calculator"></i> Antoine Constants
+                            </h5>
+                        </div>
+                        <table class="table data-table mb-0">
+                            <tr>
+                                <th>A</th>
+                                <td>{{ result.A }}</td>
+                            </tr>
+                            <tr>
+                                <th>B</th>
+                                <td>{{ result.B }}</td>
+                            </tr>
+                            <tr>
+                                <th>C</th>
+                                <td>{{ result.C }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Equation Display -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-square-root-alt"></i> Applied Equation
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <h4 class="text-primary mb-3">
+                            log<sub>10</sub>(P<sub>sat</sub>) = A - B/(T + C)
+                        </h4>
+                        <div class="alert alert-info">
+                            <code class="h5">
+                            log<sub>10</sub>(P<sub>sat</sub>) = {{ result.A }} - {{ result.B }} / ({{ result.T }} + {{ result.C }}) = {{ result.logP }}
+                        </code>
+                        </div>
+                        <p class="text-muted">
+                            <i class="fas fa-info-circle"></i>
+                            P<sub>sat</sub> is in mmHg, T is in °C
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="text-center mt-5">
+                <a href="{{ url_for('calculator') }}" class="btn btn-primary btn-lg me-3">
+                    <i class="fas fa-arrow-left"></i> New Calculation
+                </a>
+                <a href="{{ url_for('chemicals') }}" class="btn btn-outline-primary btn-lg me-3">
+                    <i class="fas fa-list"></i> Chemicals List
+                </a>
+                <button onclick="window.print()" class="btn btn-outline-secondary btn-lg">
+                    <i class="fas fa-print"></i> Print Report
+                </button>
+            </div>
+    </div>
+</div>
+
+<style>
+    @media print {
+
+        .navbar,
+        .btn,
+        footer {
+            display: none !important;
+        }
+
+        .result-card {
+            page-break-inside: avoid;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends "layout.html" %}
+
+{% block title %}Antoine Calculator - Vapor Pressure Calculation{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-calculator"></i> Antoine Equation Calculator
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.liquid_id.label(class="form-label") }}
+                        {{ form.liquid_id(class="form-select") }}
+                        {% if form.liquid_id.errors %}
+                            <div class="text-danger">
+                                {% for error in form.liquid_id.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.temperature.label(class="form-label") }}
+                        <div class="input-group">
+                            {{ form.temperature(class="form-control") }}
+                            <span class="input-group-text">°C</span>
+                        </div>
+                        {% if form.temperature.errors %}
+                            <div class="text-danger">
+                                {% for error in form.temperature.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-calculator"></i> Calculate Vapor Pressure
+                        </button>
+                    </div>
+                </form>
+
+                {% if selected_liquid %}
+                <div class="mt-4">
+                    <h5>Selected Compound Information</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Name:</strong></td>
+                                    <td>{{ selected_liquid.name }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Formula:</strong></td>
+                                    <td><code>{{ selected_liquid.chemical_formula or 'N/A' }}</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>CAS Number:</strong></td>
+                                    <td>{{ selected_liquid.cas_number or 'N/A' }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Antoine A:</strong></td>
+                                    <td>{{ selected_liquid.antoine_a or 'N/A' }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Antoine B:</strong></td>
+                                    <td>{{ selected_liquid.antoine_b or 'N/A' }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Antoine C:</strong></td>
+                                    <td>{{ selected_liquid.antoine_c or 'N/A' }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    {% if selected_liquid.temperature_min is not none and selected_liquid.temperature_max is not none %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Valid Temperature Range:</strong> {{ selected_liquid.temperature_min }}°C to {{ selected_liquid.temperature_max }}°C
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('chemicals') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-list"></i> View All Chemicals
+                    </a>
+                    {% if 'user_id' in session %}
+                    <a href="{{ url_for('admin_users') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-users"></i> Admin Panel
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-focus on temperature field when compound is selected
+        const liquidSelect = document.querySelector('select[name="liquid_id"]');
+        const tempField = document.querySelector('input[name="temperature"]');
+        
+        if (liquidSelect && tempField) {
+            liquidSelect.addEventListener('change', function() {
+                tempField.focus();
+            });
+        }
+    });
+</script>
+{% endblock %}

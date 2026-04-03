@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+
+{% block title %}Admin - Registered Users{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="fas fa-users"></i> Registered Users
+            </h2>
+            <span class="badge bg-primary">
+                {{ users|length }} Users
+            </span>
+        </div>
+
+        {% if users %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Registration Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>
+                            <span class="badge bg-secondary">{{ user.id }}</span>
+                        </td>
+                        <td>{{ user.fname }}</td>
+                        <td>{{ user.lname }}</td>
+                        <td>
+                            <strong>{{ user.username }}</strong>
+                        </td>
+                        <td>
+                            <a href="mailto:{{ user.email }}" class="text-decoration-none">
+                                {{ user.email }}
+                            </a>
+                        </td>
+                        <td>
+                            {{ user.date_created.strftime('%Y-%m-%d %H:%M') if user.date_created else 'N/A' }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+
+        {% else %}
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>No users found</strong>
+            <br>
+            <small class="text-muted">
+                No users have been registered yet.
+            </small>
+        </div>
+        {% endif %}
+
+        <div class="mt-4">
+            <a href="{{ url_for('home') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
