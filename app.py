@@ -65,8 +65,6 @@ def format_formula(formula):
     return re.sub(r'(\d+)', r'<sub>\1</sub>', formula)
 
 # ── MySQL connection ─────────────────────────────────────────────────────────────────────────────────────
-import os
-
 # Jbed l-URL d connection (Reference l-MYSQL_URL li ghadi n-diro f Railway)
 db_url = os.getenv('MYSQL_URL')
 
@@ -78,9 +76,6 @@ else:
     # Hada l-code dyal Local (ila knti k-t-tisti f PC dyalk)
     db_pass = os.getenv('DB_PASSWORD')
     app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+mysqlconnector://root:{db_pass}@localhost:3306/antoine_data'
-
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 db.init_app(app)
 bcrypt.init_app(app)
  
@@ -690,6 +685,8 @@ def init_db_route():
 
 # ── Run ───────────────────────────────────────────────────────────────────────
 if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host='0.0.0.0', port=port)
     with app.app_context():
         # Tables already exist in MySQL — no create_all needed
         pass
