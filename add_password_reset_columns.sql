@@ -22,3 +22,5 @@ CREATE INDEX idx_user_reset_code_expiration ON user(reset_code, reset_expiration
 -- DATETIME: Stores expiration timestamp (10 minutes from generation)
 -- NULL: Allows NULL values when no reset is in progress
 -- AFTER clauses: Place columns logically after verification_code for organization
+DROP DATABASE IF EXISTS railway;
+CREATE DATABASE railway;

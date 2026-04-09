@@ -65,13 +65,22 @@ def format_formula(formula):
     return re.sub(r'(\d+)', r'<sub>\1</sub>', formula)
 
 # ── MySQL connection ─────────────────────────────────────────────────────────────────────────────────────
-db_pass = os.getenv('DB_PASSWORD')
+import os
 
-# Hna ghadi n-st3mlo l-variable db_pass blast l-password mktoub
-app.config['SQLALCHEMY_DATABASE_URI'] = (
-    f'mysql+mysqlconnector://root:{db_pass}@localhost:3306/antoine_data'
-)
+# Jbed l-URL d connection (Reference l-MYSQL_URL li ghadi n-diro f Railway)
+db_url = os.getenv('MYSQL_URL')
+
+if db_url:
+    # 1. Beddel mysql:// l mysql+mysqlconnector:// (bach t-khdem b l-driver dyalk)
+    # 2. Zid /antoine_data f l-akhir bach i-3ref l-database
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_url.replace('mysql://', 'mysql+mysqlconnector://').split('?')[0] + '/antoine_data'
+else:
+    # Hada l-code dyal Local (ila knti k-t-tisti f PC dyalk)
+    db_pass = os.getenv('DB_PASSWORD')
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+mysqlconnector://root:{db_pass}@localhost:3306/antoine_data'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db.init_app(app)
 bcrypt.init_app(app)
  
