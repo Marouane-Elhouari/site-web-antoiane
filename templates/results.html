@@ -6,79 +6,101 @@
 <div class="row justify-content-center">
     <div class="col-lg-10">
         <!-- Report Header -->
-        <div class="report-header">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h1 class="report-title">
-                        <i class="fas fa-flask"></i> {{ selected_liquid.name }}
-                    </h1>
-                    <p class="report-subtitle mb-0">
-
-                        {% if selected_liquid.chemical_formula %}
-                        <span class="ms-3 chemical-formula">
-                            {{ selected_liquid.chemical_formula | format_formula | safe }}
-                        </span>
-                        {% endif %}
-                    </p>
-                </div>
-                <div class="col-md-4 text-end">
-                    <div id="status-badge">
-                        {% if result.T >= selected_liquid.temperature_min and result.T <=
-                            selected_liquid.temperature_max %} <span class="status-badge status-valid">
-                            <i class="fas fa-check-circle"></i>
-                            </span>
-                            {% else %}
-                            <span class="status-badge status-warning">
-                                <i class="fas fa-exclamation-triangle"></i> Extrapolation
+        <div class="card mb-4 reveal reveal-stagger-1">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="mb-3">
+                            <i class="fas fa-flask me-2"></i> {{ selected_liquid.name }}
+                        </h1>
+                        <p class="mb-0" style="color: #CCCCCC;">
+                            {% if selected_liquid.chemical_formula %}
+                            <span class="ms-3 chemical-formula">
+                                <code>{{ selected_liquid.chemical_formula }}</code>
                             </span>
                             {% endif %}
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div id="status-badge">
+                            {% if result and result.T >= selected_liquid.temperature_min and result.T <=
+                                selected_liquid.temperature_max %} <span class="badge"
+                                style="background-color: #4CAF50; color: #FFFFFF;">
+                                <i class="fas fa-check-circle me-1"></i> Valid Range
+                                </span>
+                                {% else %}
+                                <span class="badge" style="background-color: #FF9800; color: #FFFFFF;">
+                                    <i class="fas fa-exclamation-triangle me-1"></i> Extrapolation
+                                </span>
+                                {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Main Result Card -->
-        <div class="result-card">
-            <h3 class="mb-4">
-                <i class="fas fa-chart-line"></i> Vapor Pressure Calculation
-            </h3>
-
-            <div class="result-value-main">
-                <span
-                    style="font-size: 3.5rem; font-weight: 800; color: #00adb5; text-shadow: 0 0 30px rgba(0, 173, 181, 0.8);">
-                    P<sub>sat</sub> = {{ result.P_mmHg }} mmHg
-                </span>
+        <!-- Loading Bar -->
+        {% if vapor_pressure is defined and vapor_pressure is not none %}
+        <div class="loading-container">
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
             </div>
+        </div>
+        {% endif %}
 
-            <div class="mt-4">
-                <h5 class="text-secondary">Additional Units</h5>
-                <div class="row mt-3">
-                    <div class="col-md-4">
-                        <div class="text-center">
-                            <div class="h4 text-primary">{{ result.P_bar }}</div>
-                            <small class="text-muted">bar</small>
-                        </div>
+        <!-- Main Result Card -->
+        <div class="card mb-4 reveal reveal-stagger-2">
+            <div class="card-header">
+                <h3 class="mb-0">
+                    Vapor Pressure Calculation
+                </h3>
+            </div>
+            <div class="card-body">
+                {% if vapor_pressure is defined and vapor_pressure is not none %}
+                <div class="result-display">
+                    <div class="result-label">Calculated Vapor Pressure</div>
+                    <div class="result-value">
+                        {{ "%.4f"|format(vapor_pressure) }} mmHg
                     </div>
-                    <div class="col-md-4">
-                        <div class="text-center">
-                            <div class="h4 text-info">{{ result.P_kPa }}</div>
-                            <small class="text-muted">kPa</small>
+                </div>
+                {% else %}
+                <div class="text-center" style="color: #CCCCCC;">
+                    <i class="fas fa-exclamation-triangle me-2"></i> No calculation results available
+                </div>
+                {% endif %}
+
+                {% if result %}
+                <div class="mt-4">
+                    <h5 style="color: #CCCCCC;">Additional Units</h5>
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <div class="h4" style="color: #FFFFFF;">{{ result.P_bar }}</div>
+                                <small style="color: #CCCCCC;">bar</small>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="text-center">
-                            <div class="h4 text-success">{{ result.P_atm }}</div>
-                            <small class="text-muted">atm</small>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <div class="h4" style="color: #FFFFFF;">{{ result.P_kPa }}</div>
+                                <small style="color: #CCCCCC;">kPa</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <div class="h4" style="color: #FFFFFF;">{{ result.P_atm }}</div>
+                                <small style="color: #CCCCCC;">atm</small>
+                            </div>
                         </div>
                     </div>
                 </div>
+                {% endif %}
             </div>
         </div>
 
         <!-- Safety Check Section -->
-        {% if result.T < selected_liquid.temperature_min or result.T> selected_liquid.temperature_max %}
-            <div class="warning-message">
-                <i class="fas fa-exclamation-triangle"></i>
+        {% if result and (result.T < selected_liquid.temperature_min or result.T> selected_liquid.temperature_max) %}
+            <div class="alert alert-warning mb-4">
+                <i class="fas fa-exclamation-triangle me-2"></i>
                 <strong>Extrapolation Warning:</strong> Results may be inaccurate.
                 Temperature {{ result.T }}°C is outside the valid range
                 [{% if selected_liquid.temperature_min is not none %}{{ selected_liquid.temperature_min }}{% else
@@ -89,98 +111,113 @@
             {% endif %}
 
             <!-- Data Tables -->
-            <div class="row mt-4">
+            <div class="row">
                 <div class="col-md-6">
-                    <div class="card">
+                    <div class="card reveal reveal-stagger-3">
                         <div class="card-header">
                             <h5 class="mb-0">
-                                <i class="fas fa-thermometer-half"></i> Input Parameters
+                                <i class="fas fa-thermometer-half me-2"></i> Input Parameters
                             </h5>
                         </div>
-                        <table class="table data-table mb-0">
-                            <tr>
-                                <th>Temperature</th>
-                                <td>{{ result.T }}°C</td>
-                            </tr>
-                            <tr>
-                                <th>Valid Range</th>
-                                <td>
-                                    {% if selected_liquid.temperature_min is not none and
-                                    selected_liquid.temperature_max is not none %}
-                                    {{ selected_liquid.temperature_min }}°C to {{ selected_liquid.temperature_max }}°C
-                                    {% else %}
-                                    N/A
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Boiling Point</th>
-                                <td>{{ selected_liquid.boiling_point or 'N/A' }}°C</td>
-                            </tr>
-                        </table>
+                        <div class="card-body">
+                            {% if result %}
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>Temperature</th>
+                                    <td>{{ result.T }}°C</td>
+                                </tr>
+                                <tr>
+                                    <th>Valid Range</th>
+                                    <td>
+                                        {% if selected_liquid.temperature_min is not none and
+                                        selected_liquid.temperature_max is not none %}
+                                        {{ selected_liquid.temperature_min }}°C to {{ selected_liquid.temperature_max
+                                        }}°C
+                                        {% else %}
+                                        N/A
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Boiling Point</th>
+                                    <td>{{ selected_liquid.boiling_point or 'N/A' }}°C</td>
+                                </tr>
+                            </table>
+                            {% else %}
+                            <p style="color: #CCCCCC;">No input parameters available</p>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
 
                 <div class="col-md-6">
-                    <div class="card">
+                    <div class="card reveal reveal-stagger-4">
                         <div class="card-header">
                             <h5 class="mb-0">
-                                <i class="fas fa-calculator"></i> Antoine Constants
+                                <i class="fas fa-calculator me-2"></i> Antoine Constants
                             </h5>
                         </div>
-                        <table class="table data-table mb-0">
-                            <tr>
-                                <th>A</th>
-                                <td>{{ result.A }}</td>
-                            </tr>
-                            <tr>
-                                <th>B</th>
-                                <td>{{ result.B }}</td>
-                            </tr>
-                            <tr>
-                                <th>C</th>
-                                <td>{{ result.C }}</td>
-                            </tr>
-                        </table>
+                        <div class="card-body">
+                            {% if result %}
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>A</th>
+                                    <td>{{ result.A }}</td>
+                                </tr>
+                                <tr>
+                                    <th>B</th>
+                                    <td>{{ result.B }}</td>
+                                </tr>
+                                <tr>
+                                    <th>C</th>
+                                    <td>{{ result.C }}</td>
+                                </tr>
+                            </table>
+                            {% else %}
+                            <p style="color: #CCCCCC;">No Antoine constants available</p>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Equation Display -->
+            {% if result %}
             <div class="card mt-4">
                 <div class="card-header">
                     <h5 class="mb-0">
-                        <i class="fas fa-square-root-alt"></i> Applied Equation
+                        <i class="fas fa-square-root-alt me-2"></i> Applied Equation
                     </h5>
                 </div>
                 <div class="card-body">
                     <div class="text-center">
-                        <h4 class="text-primary mb-3">
+                        <h4 class="mb-3" style="color: #FFFFFF;">
                             log<sub>10</sub>(P<sub>sat</sub>) = A - B/(T + C)
                         </h4>
                         <div class="alert alert-info">
-                            <code class="h5">
+                            <code class="h5" style="color: #FFFFFF;">
                             log<sub>10</sub>(P<sub>sat</sub>) = {{ result.A }} - {{ result.B }} / ({{ result.T }} + {{ result.C }}) = {{ result.logP }}
                         </code>
                         </div>
-                        <p class="text-muted">
-                            <i class="fas fa-info-circle"></i>
+                        <p style="color: #CCCCCC;">
+                            <i class="fas fa-info-circle me-2"></i>
                             P<sub>sat</sub> is in mmHg, T is in °C
                         </p>
                     </div>
                 </div>
             </div>
+            {% endif %}
 
             <!-- Action Buttons -->
             <div class="text-center mt-5">
                 <a href="{{ url_for('calculator') }}" class="btn btn-primary btn-lg me-3">
-                    <i class="fas fa-arrow-left"></i> New Calculation
+                    <i class="fas fa-arrow-left me-2"></i> New Calculation
                 </a>
                 <a href="{{ url_for('chemicals') }}" class="btn btn-outline-primary btn-lg me-3">
-                    <i class="fas fa-list"></i> Chemicals List
+                    <i class="fas fa-list me-2"></i> Chemicals List
                 </a>
-                <button onclick="window.print()" class="btn btn-outline-secondary btn-lg">
-                    <i class="fas fa-print"></i> Print Report
+                <button onclick="window.print()" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-print me-2"></i> Print Report
                 </button>
             </div>
     </div>
@@ -195,7 +232,7 @@
             display: none !important;
         }
 
-        .result-card {
+        .card {
             page-break-inside: avoid;
         }
     }

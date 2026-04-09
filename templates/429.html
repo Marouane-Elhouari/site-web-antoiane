@@ -1,0 +1,202 @@
+{% extends "layout.html" %}
+
+{% block title %}Rate Limit Exceeded - Antoine Calculator{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Full viewport centering container */
+    .center-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    /* Centered info box styling */
+    .centered-info-box {
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        border: 2px solid #3498db;
+        border-radius: 15px;
+        padding: 30px;
+        max-width: 500px;
+        width: 100%;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        color: #ecf0f1;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Glowing border effect */
+    .centered-info-box::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(45deg, #3498db, #9b59b6, #3498db);
+        border-radius: 15px;
+        z-index: -1;
+        opacity: 0.7;
+        animation: glow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+        from {
+            opacity: 0.5;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Icon styling */
+    .info-icon {
+        font-size: 3rem;
+        color: #3498db;
+        margin-bottom: 20px;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    /* Title styling */
+    .info-title {
+        color: #3498db;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Text styling */
+    .info-text {
+        color: #bdc3c7;
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 25px;
+    }
+
+    /* Action buttons */
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-custom {
+        background: linear-gradient(45deg, #3498db, #2980b9);
+        border: none;
+        color: white;
+        padding: 12px 25px;
+        border-radius: 25px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        color: white;
+    }
+
+    .btn-secondary-custom {
+        background: linear-gradient(45deg, #7f8c8d, #95a5a6);
+    }
+
+    .btn-secondary-custom:hover {
+        box-shadow: 0 5px 15px rgba(127, 140, 141, 0.4);
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 576px) {
+        .center-container {
+            padding: 10px;
+        }
+
+        .centered-info-box {
+            padding: 20px;
+            margin: 10px;
+        }
+
+        .info-icon {
+            font-size: 2.5rem;
+        }
+
+        .info-title {
+            font-size: 1.3rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn-custom {
+            width: 100%;
+            max-width: 200px;
+        }
+    }
+
+    /* Dark theme adjustments */
+    body {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
+    }
+
+    /* Override layout background for this page */
+    main.container {
+        background: transparent !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="center-container">
+    <div class="centered-info-box">
+        <i class="fas fa-question-circle info-icon"></i>
+
+        <h6 class="info-title">
+            <i class="fas fa-shield-alt"></i> Why Rate Limits?
+        </h6>
+
+        <p class="info-text">
+            These limits help protect our service from abuse and ensure fair usage for everyone.
+            They prevent automated attacks and maintain system stability, keeping Antoine Calculator
+            fast and reliable for all users.
+        </p>
+
+        <div class="action-buttons">
+            <a href="{{ url_for('home') }}" class="btn-custom">
+                <i class="fas fa-home"></i> Go to Homepage
+            </a>
+        </div>
+
+        <div class="mt-3">
+            <small style="color: #7f8c8d;">
+                <i class="fas fa-clock"></i>
+                Rate limits reset automatically. Try again in a few minutes.
+            </small>
+        </div>
+    </div>
+</div>
+{% endblock %}

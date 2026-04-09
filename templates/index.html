@@ -2,111 +2,549 @@
 
 {% block title %}Home - Antoine Equation Calculator{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* Typewriter Animation for Greeting */
+    .typewriter-greeting {
+        color: #FFFFFF;
+        font-weight: 700;
+        font-size: 3.5rem;
+        white-space: nowrap;
+        overflow: hidden;
+        border-right: 3px solid #FFFFFF;
+        animation: typing 2s steps(20, end), blink-caret 0.75s step-end infinite;
+        margin: 0;
+        padding: 0;
+    }
+
+    @keyframes typing {
+        from {
+            width: 0
+        }
+
+        to {
+            width: 100%
+        }
+    }
+
+    @keyframes blink-caret {
+
+        from,
+        to {
+            border-color: transparent
+        }
+
+        50% {
+            border-color: #FFFFFF
+        }
+    }
+
+    /* Hide cursor after typing is complete */
+    .typewriter-greeting.typed {
+        animation: typing 2s steps(20, end) forwards;
+        border-right: none;
+    }
+
+    /* Clean Monochrome Buttons */
+    .btn-glow {
+        background-color: #000000;
+        color: #FFFFFF;
+        border: 2px solid #FFFFFF;
+        border-radius: 8px;
+        font-weight: 700;
+        padding: 12px 30px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.9rem;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-glow:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        background-color: #FFFFFF;
+        color: #000000;
+        text-decoration: none;
+    }
+
+    .btn-glow:focus {
+        text-decoration: none;
+        outline: none;
+    }
+
+    /* Remove all underlines globally */
+    .btn-glow,
+    .btn-glow:hover,
+    .btn-glow:focus,
+    .btn-glow:active {
+        text-decoration: none !important;
+    }
+
+    /* Overhauled Symmetrical Branching Timeline */
+    .timeline-container {
+        position: relative;
+        padding: 120px 0;
+        overflow: visible;
+        min-height: 800px;
+    }
+
+    .timeline-container:not(.animated) .central-line {
+        transform: translateX(-50%) scaleY(0);
+    }
+
+    .timeline-container:not(.animated) .timeline-step {
+        opacity: 0;
+        transform: translateX(0);
+    }
+
+    .central-line {
+        position: absolute;
+        left: 50%;
+        top: 40px;
+        width: 2px;
+        background: #FFFFFF;
+        transform: translateX(-50%) scaleY(0);
+        transform-origin: top center;
+        height: 720px;
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        z-index: 1;
+    }
+
+    .timeline-container.animated .central-line {
+        animation: growLineScale 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    @keyframes growLineScale {
+        from {
+            transform: translateX(-50%) scaleY(0);
+            opacity: 0;
+        }
+
+        5% {
+            opacity: 1;
+        }
+
+        to {
+            transform: translateX(-50%) scaleY(1);
+            opacity: 1;
+        }
+    }
+
+    .timeline-step {
+        position: absolute;
+        width: 40%;
+        opacity: 0;
+        transform: translateX(0);
+        transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 10;
+    }
+
+    .timeline-step.left {
+        right: 55%;
+        text-align: right;
+        padding-right: 20px;
+    }
+
+    .timeline-step.right {
+        left: 55%;
+        text-align: left;
+        padding-left: 20px;
+    }
+
+    /* Step positioning with more spacing */
+    .timeline-step:nth-child(2) {
+        top: 15%;
+    }
+
+    .timeline-step:nth-child(3) {
+        top: 35%;
+    }
+
+    .timeline-step:nth-child(4) {
+        top: 55%;
+    }
+
+    .timeline-step:nth-child(5) {
+        top: 75%;
+    }
+
+    /* Animation triggers based on line growth */
+    .timeline-container.animated .timeline-step:nth-child(2) {
+        animation: slideInFromRight 1.5s cubic-bezier(0.4, 0, 0.2, 1) 0.8s forwards;
+    }
+
+    .timeline-container.animated .timeline-step:nth-child(3) {
+        animation: slideInFromLeft 1.5s cubic-bezier(0.4, 0, 0.2, 1) 1.3s forwards;
+    }
+
+    .timeline-container.animated .timeline-step:nth-child(4) {
+        animation: slideInFromRight 1.5s cubic-bezier(0.4, 0, 0.2, 1) 1.8s forwards;
+    }
+
+    .timeline-container.animated .timeline-step:nth-child(5) {
+        animation: slideInFromLeft 1.5s cubic-bezier(0.4, 0, 0.2, 1) 2.3s forwards;
+    }
+
+    @keyframes slideInFromRight {
+        from {
+            opacity: 0;
+            transform: translateX(150px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes slideInFromLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-150px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .branch-point {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: #FFFFFF;
+        border-radius: 50%;
+        top: 50%;
+        transform: translateY(-50%);
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+        z-index: 15;
+        opacity: 0;
+    }
+
+    .timeline-container.animated .branch-point {
+        animation: glowPulse 2s ease-in-out infinite;
+        animation-delay: inherit;
+    }
+
+    @keyframes glowPulse {
+
+        0%,
+        100% {
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+            transform: translateY(-50%) scale(1);
+        }
+
+        50% {
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.9);
+            transform: translateY(-50%) scale(1.1);
+        }
+    }
+
+    .timeline-step.left .branch-point {
+        right: -5px;
+    }
+
+    .timeline-step.right .branch-point {
+        left: -5px;
+    }
+
+    .branch-line {
+        position: absolute;
+        height: 2px;
+        background: #FFFFFF;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0.8;
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+        z-index: 5;
+    }
+
+    .timeline-step.left .branch-line {
+        right: 5px;
+        width: 80px;
+    }
+
+    .timeline-step.right .branch-line {
+        left: 5px;
+        width: 80px;
+    }
+
+    .timeline-content h4 {
+        color: #FFFFFF;
+        font-weight: 700;
+        font-size: 1.6rem;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        line-height: 1.2;
+        text-decoration: none;
+    }
+
+    .timeline-content p {
+        color: rgba(255, 255, 255, 0.85);
+        font-weight: 300;
+        font-size: 1.1rem;
+        line-height: 1.8;
+        margin: 0;
+        text-decoration: none;
+        border-bottom: none;
+    }
+
+    /* Initial glowing circle at top */
+    .timeline-start-point {
+        position: absolute;
+        left: 50%;
+        top: 40px;
+        width: 24px;
+        height: 24px;
+        background: #FFFFFF;
+        border-radius: 50%;
+        transform: translateX(-50%) scale(0);
+        box-shadow: 0 0 35px rgba(255, 255, 255, 1);
+        z-index: 20;
+        opacity: 0;
+    }
+
+    .timeline-container.animated .timeline-start-point {
+        animation: startGlow 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    @keyframes startGlow {
+        0% {
+            opacity: 0;
+            transform: translateX(-50%) scale(0);
+        }
+
+        10% {
+            opacity: 1;
+            transform: translateX(-50%) scale(1.3);
+        }
+
+        20% {
+            transform: translateX(-50%) scale(1);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+    }
+
+    /* Remove all underlines globally */
+    a,
+    a:hover,
+    a:focus,
+    a:active {
+        text-decoration: none !important;
+    }
+
+    .timeline-content * {
+        text-decoration: none !important;
+        border-bottom: none !important;
+    }
+
+    /* Monochrome Typography */
+    .display-4 {
+        font-weight: 700;
+        color: #FFFFFF;
+        text-decoration: none !important;
+    }
+
+    .lead {
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 300;
+        text-decoration: none !important;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="row">
     <div class="col-12">
-        <!-- Hero Section -->
-        <div class="jumbotron animated-fade-in bg-primary text-white rounded p-5 mb-4">
-            <div class="container text-center">
+        <!-- Glassmorphism Welcome Section -->
+        <div class="welcome-card reveal p-5 mb-5">
+            <div class="text-center">
                 {% if current_user.is_authenticated %}
-                <h1 class="display-4">
-                    <i class="fas fa-flask"></i> Welcome {{ current_user.fname }}!
+                <h1 class="typewriter-greeting mb-4" id="greeting">
+                    WELCOME {{ current_user.username.split('_')[0].upper() }}!
                 </h1>
+                <p class="lead mb-4">Ready to explore thermodynamic calculations?</p>
                 {% else %}
-                <h1 class="display-4">
-                    <i class="fas fa-flask"></i> Antoine Equation Calculator
+                <h1 class="display-4 mb-4">
+                    Antoine Calculator
                 </h1>
-                <p class="lead">Bienvenue dans votre outil de calcul thermodynamique</p>
+                <p class="lead mb-4">Advanced thermodynamic calculations for modern science</p>
                 {% endif %}
-                <hr class="my-4 border-white">
-                <p>
-                    Une application web pour le calcul de la pression de vapeur
-                    des composés chimiques en utilisant l'équation d'Antoine.
-                </p>
-                {% if current_user.is_authenticated %}
-                <a class="btn btn-light btn-lg me-3" href="{{ url_for('chemicals') }}" role="button">
-                    <i class="fas fa-list"></i> View Chemicals
-                </a>
-                <a class="btn btn-primary btn-lg" href="{{ url_for('calculator') }}" role="button">
-                    <i class="fas fa-calculator"></i> Go to Calculator
-                </a>
-                {% else %}
-                <a class="btn btn-light btn-lg" href="{{ url_for('login') }}" role="button">
-                    <i class="fas fa-rocket"></i> Get Started
-                </a>
-                {% endif %}
+
+                <div class="mb-4">
+                    <p class="mb-0" style="color: rgba(255, 255, 255, 0.7);">
+                        Precision vapor pressure calculations using the Antoine equation
+                    </p>
+                </div>
+
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('calculator') }}" class="btn-glow">
+                        Start Calculating
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('login') }}" class="btn-glow">
+                        Get Started
+                    </a>
+                    <a href="{{ url_for('register') }}" class="btn-glow">
+                        Create Account
+                    </a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-
-
+<!-- Vertical Branching Timeline -->
 <div class="row mt-5">
     <div class="col-12">
-        <div class="card animated-fade-in">
-            <div class="card-header">
-                <h5><i class="fas fa-info-circle"></i> Comment ça marche ?</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        {% if current_user.is_authenticated %}
-                        <h6><i class="fas fa-calculator"></i> 1. Choisissez un composé</h6>
-                        <p>Sélectionnez un composé chimique dans notre base de données.</p>
-                        {% else %}
-                        <h6><i class="fas fa-sign-in-alt"></i> 1. Connectez-vous</h6>
-                        <p>Créez un compte ou connectez-vous pour accéder à la calculatrice.</p>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-6">
-                        {% if current_user.is_authenticated %}
-                        <h6><i class="fas fa-temperature-high"></i> 2. Entrez la température</h6>
-                        <p>Spécifiez la température pour le calcul de pression de vapeur.</p>
-                        {% else %}
-                        <h6><i class="fas fa-list"></i> 2. Choisissez un composé</h6>
-                        <p>Sélectionnez un composé chimique dans notre base de données.</p>
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-md-6">
-                        {% if current_user.is_authenticated %}
-                        <h6><i class="fas fa-chart-line"></i> 3. Obtenez les résultats</h6>
-                        <p>Résultats précis en mmHg, bar, kPa et atm avec validation.</p>
-                        {% else %}
-                        <h6><i class="fas fa-temperature-high"></i> 3. Entrez la température</h6>
-                        <p>Spécifiez la température pour le calcul de pression de vapeur.</p>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-6">
-                        {% if current_user.is_authenticated %}
-                        <h6><i class="fas fa-database"></i> 4. Explorez la base</h6>
-                        <p>Accédez à la liste complète des composés chimiques disponibles.</p>
-                        {% else %}
-                        <h6><i class="fas fa-calculator"></i> 4. Obtenez les résultats</h6>
-                        <p>Résultats précis en mmHg, bar, kPa et atm avec validation.</p>
-                        {% endif %}
-                    </div>
+        <div class="timeline-container" id="timeline">
+            <div class="timeline-start-point"></div>
+            <div class="central-line"></div>
+
+            {% if current_user.is_authenticated %}
+            <!-- Authenticated User Steps -->
+            <div class="timeline-step left">
+                <div class="branch-point"></div>
+                <div class="branch-line"></div>
+                <div class="timeline-content">
+                    <h4>1. Select Compound</h4>
+                    <p>Choose from our comprehensive chemical database with precise Antoine constants.</p>
                 </div>
             </div>
+
+            <div class="timeline-step right">
+                <div class="branch-point"></div>
+                <div class="branch-line"></div>
+                <div class="timeline-content">
+                    <h4>2. Enter Temperature</h4>
+                    <p>Specify temperature in Celsius for accurate vapor pressure calculation.</p>
+                </div>
+            </div>
+
+            <div class="timeline-step left">
+                <div class="branch-point"></div>
+                <div class="branch-line"></div>
+                <div class="timeline-content">
+                    <h4>3. Get Results</h4>
+                    <p>Precise results in mmHg, bar, kPa, and atm with range validation.</p>
+                </div>
+            </div>
+
+            <div class="timeline-step right">
+                <div class="branch-point"></div>
+                <div class="branch-line"></div>
+                <div class="timeline-content">
+                    <h4>4. Explore Database</h4>
+                    <p>Access the complete list of available chemical compounds.</p>
+                </div>
+            </div>
+            {% else %}
+            <!-- Non-Authenticated User Steps -->
+            <div class="timeline-step left">
+                <div class="branch-point"></div>
+                <div class="branch-line"></div>
+                <div class="timeline-content">
+                    <h4>1. Sign In</h4>
+                    <p>Create an account or login to access the advanced calculator.</p>
+                </div>
+            </div>
+
+            <div class="timeline-step right">
+                <div class="branch-point"></div>
+                <div class="branch-line"></div>
+                <div class="timeline-content">
+                    <h4>2. Select Compound</h4>
+                    <p>Choose from our comprehensive chemical database.</p>
+                </div>
+            </div>
+
+            <div class="timeline-step left">
+                <div class="branch-point"></div>
+                <div class="branch-line"></div>
+                <div class="timeline-content">
+                    <h4>3. Enter Temperature</h4>
+                    <p>Specify temperature for vapor pressure calculation.</p>
+                </div>
+            </div>
+
+            <div class="timeline-step right">
+                <div class="branch-point"></div>
+                <div class="branch-line"></div>
+                <div class="timeline-content">
+                    <h4>4. Get Results</h4>
+                    <p>Precise results in mmHg, bar, kPa, and atm with validation.</p>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
 
+<!-- Antoine Equation Section -->
 <div class="row mt-4">
     <div class="col-12 text-center">
-        <div class="alert alert-info">
-            <h6><i class="fas fa-lightbulb"></i> L'équation d'Antoine</h6>
+        <div class="alert alert-info reveal">
+            <h6>The Antoine Equation</h6>
             <p class="mb-0">
-                <code>log₁₀(P_sat) = A - B/(T + C)</code>
+                <code
+                    style="background: rgba(255, 255, 255, 0.1); padding: 8px 12px; border-radius: 6px;">log¹º(P_sat) = A - B/(T + C)</code>
                 <br>
                 <small class="text-muted">
-                    Où P_sat est la pression de vapeur saturée, T est la température en °C,
-                    et A, B, C sont les constantes d'Antoine spécifiques à chaque composé.
+                    Where P_sat is saturated vapor pressure, T is temperature in °C,
+                    and A, B, C are Antoine constants specific to each compound.
                 </small>
             </p>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Handle typewriter cursor disappearing after animation completes
+    document.addEventListener('DOMContentLoaded', function () {
+        const greeting = document.getElementById('greeting');
+        if (greeting) {
+            setTimeout(function () {
+                greeting.classList.add('typed');
+            }, 2000);
+        }
+    });
+
+    // Intersection Observer for Timeline Animation
+    document.addEventListener('DOMContentLoaded', function () {
+        const timeline = document.getElementById('timeline');
+
+        if (timeline) {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.3
+            };
+
+            const observer = new IntersectionObserver(function (entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        timeline.classList.add('animated');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            observer.observe(timeline);
+        }
+    });
+</script>
 {% endblock %}

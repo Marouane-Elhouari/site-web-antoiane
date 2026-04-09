@@ -12,8 +12,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <!-- Inter Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link href="{{ url_for('static', filename='css/style.css') }}?v=1.1" rel="stylesheet">
 
     <style>
         /* Minimalist Monochrome Theme */
@@ -503,60 +501,6 @@
             padding: 2rem 0;
         }
 
-        /* Scroll Reveal Animations */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .reveal-fade-up {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        .reveal-fade-up.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Interactive Cursor Glow */
-        .cursor-glow {
-            position: fixed;
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 40%, transparent 70%);
-            pointer-events: none;
-            z-index: 1;
-            transform: translate(-50%, -50%);
-            transition: opacity 0.3s ease;
-            mix-blend-mode: screen;
-        }
-
-        /* Staggered animations for multiple elements */
-        .reveal-stagger-1 {
-            transition-delay: 0.1s;
-        }
-
-        .reveal-stagger-2 {
-            transition-delay: 0.2s;
-        }
-
-        .reveal-stagger-3 {
-            transition-delay: 0.3s;
-        }
-
-        .reveal-stagger-4 {
-            transition-delay: 0.4s;
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .navbar-brand {
@@ -578,11 +522,6 @@
             .social-media-circles {
                 justify-content: center;
             }
-
-            .cursor-glow {
-                width: 200px;
-                height: 200px;
-            }
         }
     </style>
 
@@ -590,9 +529,6 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-
-    <!-- Interactive Cursor Glow -->
-    <div class="cursor-glow" id="cursorGlow"></div>
 
     <!-- Starfield Container - Only for Authenticated Users -->
     {% if current_user.is_authenticated %}
@@ -612,29 +548,29 @@
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('home') }}">
-                            Accueil
+                            <i class="fas fa-home me-1"></i>Accueil
                         </a>
                     </li>
                     {% if current_user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('calculator') }}">
-                            Calculateur
+                            <i class="fas fa-calculator me-1"></i>Calculateur
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('chemicals') }}">
-                            Produits Chimiques
+                            <i class="fas fa-flask me-1"></i>Produits Chimiques
                         </a>
                     </li>
                     {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('login') }}">
-                            Login
+                            <i class="fas fa-sign-in-alt me-1"></i>Login
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('register') }}">
-                            Register
+                            <i class="fas fa-user-plus me-1"></i>Register
                         </a>
                     </li>
                     {% endif %}
@@ -643,7 +579,7 @@
                     {% if current_user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('logout') }}">
-                            Logout
+                            <i class="fas fa-sign-out-alt me-1"></i>Logout
                         </a>
                     </li>
                     {% endif %}
@@ -659,6 +595,7 @@
         {% for category, message in messages %}
         <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show"
             role="alert">
+            <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'info-circle' }} me-2"></i>
             {{ message }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
@@ -689,13 +626,27 @@
                 <div class="col-lg-6 col-md-12">
                     <h5>Contact</h5>
                     <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
                         <span>Settat</span>
                     </div>
                     <div class="contact-item">
+                        <i class="fas fa-phone"></i>
                         <span>+212 634138849</span>
                     </div>
                     <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
                         <span>elhouarimarouane56@gmail.com</span>
+                    </div>
+                    <div class="social-media-circles">
+                        <a href="https://github.com/marouane-elhaouari" target="_blank" class="social-circle">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://linkedin.com/in/marouane-elhaouari" target="_blank" class="social-circle">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="https://facebook.com/marouane.elhaouari" target="_blank" class="social-circle">
+                            <i class="fab fa-facebook"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -706,85 +657,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // Interactive Cursor Glow
-        function initCursorGlow() {
-            const cursorGlow = document.getElementById('cursorGlow');
-            if (!cursorGlow) return;
-
-            let mouseX = 0;
-            let mouseY = 0;
-            let currentX = 0;
-            let currentY = 0;
-
-            document.addEventListener('mousemove', (e) => {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-            });
-
-            function animateCursor() {
-                const ease = 0.15;
-                currentX += (mouseX - currentX) * ease;
-                currentY += (mouseY - currentY) * ease;
-
-                cursorGlow.style.left = currentX + 'px';
-                cursorGlow.style.top = currentY + 'px';
-
-                requestAnimationFrame(animateCursor);
-            }
-
-            animateCursor();
-
-            // Hide cursor glow when mouse leaves window
-            document.addEventListener('mouseleave', () => {
-                cursorGlow.style.opacity = '0';
-            });
-
-            document.addEventListener('mouseenter', () => {
-                cursorGlow.style.opacity = '1';
-            });
-        }
-
-        // Scroll Reveal Animation
-        function initScrollReveal() {
-            const revealElements = document.querySelectorAll('.reveal, .reveal-fade-up');
-
-            const revealOnScroll = () => {
-                revealElements.forEach(element => {
-                    const elementTop = element.getBoundingClientRect().top;
-                    const windowHeight = window.innerHeight;
-                    const revealPoint = 150;
-
-                    if (elementTop < windowHeight - revealPoint) {
-                        element.classList.add('active');
-                    }
-                });
-            };
-
-            // Initial check on load
-            revealOnScroll();
-
-            // Check on scroll
-            window.addEventListener('scroll', revealOnScroll);
-
-            // Intersection Observer for better performance
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                    }
-                });
-            }, observerOptions);
-
-            revealElements.forEach(element => {
-                observer.observe(element);
-            });
-        }
-
         // Starfield Animation
         function createStarfield() {
             const starfieldContainer = document.getElementById('starfield-container');
@@ -816,15 +688,8 @@
             }
         }
 
-        // Initialize everything when DOM is loaded
+        // Initialize starfield only for authenticated users
         document.addEventListener('DOMContentLoaded', () => {
-            // Initialize cursor glow
-            initCursorGlow();
-
-            // Initialize scroll reveal
-            initScrollReveal();
-
-            // Initialize starfield only for authenticated users
             const starfieldContainer = document.getElementById('starfield-container');
             if (starfieldContainer) {
                 createStarfield();

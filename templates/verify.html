@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+
+{% block title %}Verify Email - Antoine Calculator{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-envelope-check"></i> Email Verification
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info mb-4">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Check your email!</strong> We've sent a 6-digit verification code to your email address.
+                </div>
+                
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-4">
+                        {{ form.verification_code.label(class="form-label fw-bold") }}
+                        {{ form.verification_code(class="form-control form-control-lg text-center", placeholder="000000", maxlength="6") }}
+                        {% if form.verification_code.errors %}
+                            <div class="text-danger mt-2">
+                                {% for error in form.verification_code.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text text-muted mt-2">
+                            Enter the 6-digit code sent to your email address
+                        </div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-info btn-lg">
+                            <i class="fas fa-check-circle"></i> Verify Email
+                        </button>
+                    </div>
+                </form>
+
+                <div class="text-center mt-4">
+                    <p class="text-muted">
+                        <small>
+                            Didn't receive the code? Check your spam folder or 
+                            <a href="{{ url_for('register') }}">register again</a>
+                        </small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Auto-focus on verification code input
+document.addEventListener('DOMContentLoaded', function() {
+    const codeInput = document.querySelector('input[name="verification_code"]');
+    if (codeInput) {
+        codeInput.focus();
+        
+        // Auto-submit when 6 digits are entered
+        codeInput.addEventListener('input', function(e) {
+            if (e.target.value.length === 6) {
+                // Optional: auto-submit form
+                // e.target.form.submit();
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
